@@ -1,61 +1,51 @@
 #install.packages("rstudioapi")
 # run this above line if returns 'there is no package called ‘rstudioapi’'
 
-
-#install.packages("rjson")
+install.packages("rjson",repos = "http://cran.us.r-project.org")
 #run this above line if rjson has not yet been installed
 
-library("rstudioapi")
+target = as.character(commandArgs(trailingOnly=TRUE))
 library("rjson")
 
 # build path to the R script where all the functions are stored
-path = paste(dirname(rstudioapi::getSourceEditorContext()$path),
-             '/src/methods.R',
-             sep = '')
+path = './src/methods.R'
 # source that path
 source(path)
 
 
-# run these functions
 
-main = function(targets) {
-  
-  if ('eda' %in% targets) {
-    path = path = paste(dirname(rstudioapi::getSourceEditorContext()$path),
-                        "/config",
-                        sep = '')
-    params = fromJSON(file = "eda-params.json")
-    eda_generator(params['data'],params['csv_filename'],params['g1'],params['g2'])
-  }
-  
-  
-  if ('methods' %in% targets) {
-    path = paste(dirname(rstudioapi::getSourceEditorContext()$path),
-                 "/config",
-                 sep = '')
-    # build path and load data for the first method
-    data_fp = fromJSON(file = "methods.json")
-    
-    path = paste(dirname(rstudioapi::getSourceEditorContext()$path),
-                 data_fp['data_fp'],
-                 sep = '')
-    mootha  = read.table(path, header = TRUE)
-    mootha_function(mootha)
-    
-    
-    # build path and load data for the second method
-    path2 = paste(dirname(rstudioapi::getSourceEditorContext()$path),
-                  data_fp['data_fp2'],
-                  sep = '')
-    Z = scan(path2)
-    Jongho_function(Z)
-    
-  }
+if (length(target) == 0){
+	target = "test"
 }
 
-
-if (!interactive()) {
-  main(targets)
+# run these functions
+if ('eda' %in% target) {
+	params = fromJSON(file = "./config/eda-params.json")
+  	eda_generator(params['data'],params['csv_filename'],params['g1'],params['g2'])
+} else if ('all' %in% target) {
+  	# build path and load data for the first method
+  	data_fp = fromJSON(file = "./config/methods.json")
+    
+  	path = data_fp['data_fp']
+  	mootha  = read.table(as.character(path), header = TRUE)
+  	mootha_function(mootha)
+    
+  	# build path and load data for the second method
+  	path2 = data_fp['data_fp2']
+  	Z = scan(as.character(path2))
+  	Jongho_function(Z)
+} else if ('test' %in% target){
+	# build path and load data for the first method
+  	data_fp = fromJSON(file = "./config/test.json")
+    
+  	path = data_fp['data_fp']
+  	mootha  = read.table(as.character(path), header = TRUE)
+  	mootha_function(mootha)
+    
+  	# build path and load data for the second method
+  	path2 = data_fp['data_fp2']
+  	Z = scan(as.character(path2))
+  	Jongho_function(Z)
 }
 
 #future functions (aka pipeline)
