@@ -40,12 +40,12 @@ mootha_function <- function(mootha) {
   #lines(x, t.expected, type='l', col='red', lwd=2)
   
   # Plot of false discovery rate
-  path = './test/test_output/P_FDR.png'
+  path = './test/testresult/p_FDR.png'
   png(filename=path)
   plot(p, p.expected/p.obtained, col='black', type='l', lwd=2, ylab='FDR')
   dev.off()
   
-  path = './test/test_output/T_FDR.png'
+  path = './test/testresult/t_FDR.png'
   png(filename=path) 
   plot(x, t.expected/t.obtained, col='black', type='l', lwd=2, ylab='FDR')
   dev.off()
@@ -54,7 +54,7 @@ mootha_function <- function(mootha) {
 # function for Jongho data
 Jongho_function <- function(Z) {
   
-  path = './test/test_output/Jongho_distribution.png'
+  path = './test/testresult/Jongho_hist.png'
   png(filename=path) 
   Z.hist <- hist(Z, 100, probability = T)
   z <- Z.hist$mids
@@ -67,7 +67,7 @@ Jongho_function <- function(Z) {
   y <- log(Z.hist$density[index])
   m1 <- lm(y ~ x + I(x^2))
 
-  path = './test/test_output/Jongho_Empirical.png'
+  path = './test/testresult/Empirical.png'
   png(filename=path) 
   plot(x,y)
   lines(x, predict(m1), col='blue', lwd=2)
